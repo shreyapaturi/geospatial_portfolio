@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIS Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f2eb;
+    --accent: #e63412;
+    --accent2: #1a6fff;
+    --accent3: #00c87a;
+    --muted: #7a7570;
+    --border: rgba(13,13,13,0.12);
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    background: var(--paper);
+    border-bottom: 1.5px solid var(--ink);
+    mix-blend-mode: normal;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1.5px solid var(--ink);
+    padding-top: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 8rem 3rem 4rem;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    border-right: 1.5px solid var(--ink);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-name {
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-title {
+    font-family: var(--mono);
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    color: var(--muted);
+    margin-bottom: 3rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    max-width: 480px;
+    color: var(--ink);
+    opacity: 0.75;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.9rem 2rem;
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    transition: all 0.2s;
+    align-self: flex-start;
+  }
+  .hero-cta:hover { background: var(--accent); border-color: var(--accent); }
+
+  .hero-right {
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  /* Animated map grid background */
+  .map-canvas {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .map-canvas svg {
+    width: 100%; height: 100%;
+    position: absolute; inset: 0;
+  }
+
+  .hero-stat-strip {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    border-top: 1px solid rgba(245,242,235,0.15);
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+  }
+  .hero-stat {
+    padding: 1.5rem;
+    border-right: 1px solid rgba(245,242,235,0.15);
+    color: var(--paper);
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-num {
+    font-family: var(--mono);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--paper);
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,0.5);
+    font-family: var(--mono);
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  /* ── SKILLS BAND ── */
+  .skills-band {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 1.5rem 3rem;
+    display: flex; align-items: center; gap: 1rem;
+    overflow-x: auto;
+  }
+  .skills-band-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-right: 1rem;
+  }
+  .skill-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--ink);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .skill-tag .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    display: inline-block; flex-shrink: 0;
+  }
+  .dot-red    { background: var(--accent); }
+  .dot-blue   { background: var(--accent2); }
+  .dot-green  { background: var(--accent3); }
+  .dot-orange { background: #ff8c00; }
+  .dot-ink    { background: var(--ink); }
+
+  /* ── ABOUT ── */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .about-sidebar {
+    padding: 4rem 3rem;
+    border-right: 1.5px solid var(--ink);
+  }
+  .section-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    display: block;
+  }
+  .section-heading {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .about-body { padding: 4rem 3rem; }
+  .about-body p {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--ink);
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+    max-width: 640px;
+  }
+
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+    margin-top: 2.5rem;
+  }
+  .expertise-item {
+    background: var(--paper);
+    padding: 1.5rem;
+  }
+  .expertise-icon {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  .expertise-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .expertise-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── TOOLS ── */
+  .tools-section {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 5rem 3rem;
+  }
+  .tools-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    gap: 2rem;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+  .tool-card {
+    background: var(--paper);
+    padding: 2rem;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .tool-card:hover { background: var(--ink); color: var(--paper); }
+  .tool-card:hover .tool-level { color: var(--accent); }
+  .tool-card:hover .tool-desc { color: rgba(245,242,235,0.6); }
+
+  .tool-header-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .tool-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+  }
+  .tool-level {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(230,52,18,0.08);
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
+  }
+  .tool-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+  .tool-skills {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .tool-skill-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+  }
+  .tool-card:hover .tool-skill-tag { border-color: rgba(245,242,235,0.25); }
+
+  /* ── PROJECTS ── */
+  .projects-section {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 5rem 3rem;
+  }
+  .projects-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+  .project-list { display: flex; flex-direction: column; gap: 0; }
+  .project-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: start;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .project-item::before {
+    content: '';
+    position: absolute;
+    left: -3rem; right: -3rem; top: 0; bottom: 0;
+    background: var(--ink);
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: -1;
+  }
+  .project-item:hover { color: var(--paper); padding-left: 1rem; padding-right: 1rem; margin: 0 -1rem; }
+  .project-item:hover::before { opacity: 1; }
+  .project-item:hover .project-type { color: var(--accent); }
+  .project-item:hover .project-meta { color: rgba(245,242,235,0.5); }
+  .project-item:hover .project-tags .tag { border-color: rgba(245,242,235,0.2); color: rgba(245,242,235,0.7); }
+  .project-item:hover .project-arrow { opacity: 1; }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding-top: 0.25rem;
+  }
+  .project-body { flex: 1; }
+  .project-type {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 600px;
+    margin-bottom: 1rem;
+  }
+  .project-item:hover .project-desc { color: rgba(245,242,235,0.6); }
+  .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .project-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    padding-top: 0.25rem;
+  }
+  .project-arrow {
+    display: block;
+    font-size: 1.2rem;
+    opacity: 0;
+    margin-top: 0.25rem;
+    transition: opacity 0.2s;
+  }
+
+  /* ── VISUAL SKILLS ── */
+  .viz-section {
+    border-bottom: 1.5px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .viz-left {
+    padding: 5rem 3rem;
+    border-right: 1.5px solid var(--ink);
+  }
+  .viz-right {
+    padding: 5rem 3rem;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .skill-bars { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.75rem; }
+  .skill-bar-item {}
+  .skill-bar-header {
+    display: flex; justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+  .skill-bar-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .skill-bar-pct {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .skill-bar-track {
+    height: 4px;
+    background: rgba(13,13,13,0.1);
+    position: relative;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    background: var(--ink);
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .workflow-list {
+    margin-top: 2.5rem;
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid rgba(245,242,235,0.15);
+  }
+  .workflow-item {
+    display: flex; gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(245,242,235,0.1);
+    align-items: flex-start;
+  }
+  .workflow-item:last-child { border-bottom: none; }
+  .workflow-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    padding-top: 0.15rem;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .workflow-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(245,242,235,0.7);
+  }
+  .workflow-text strong { color: var(--paper); font-weight: 500; }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 60vh;
+  }
+  .contact-left {
+    padding: 6rem 3rem;
+    border-right: 1.5px solid var(--ink);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .contact-big {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .contact-big span { color: var(--accent); font-style: italic; }
+  .contact-links { display: flex; flex-direction: column; gap: 0; border: 1.5px solid var(--ink); }
+  .contact-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    transition: all 0.18s;
+  }
+  .contact-link:last-child { border-bottom: none; }
+  .contact-link:hover { background: var(--ink); color: var(--paper); }
+  .contact-right {
+    padding: 6rem 3rem;
+    background: var(--ink);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative; overflow: hidden;
+  }
+  .contact-availability {
+    position: relative; z-index: 2;
+    color: var(--paper);
+  }
+  .avail-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(245,242,235,0.25);
+    color: var(--accent3);
+    margin-bottom: 2rem;
+  }
+  .avail-badge::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .avail-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(245,242,235,0.65);
+    max-width: 380px;
+  }
+  .avail-text strong { color: var(--paper); font-weight: 500; }
+
+  /* Decorative grid overlay in contact-right */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,242,235,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,242,235,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+  }
+  footer p {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  footer a { color: var(--ink); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 45vh; }
+    .hero-left { padding: 6rem 1.5rem 4rem; }
+    .about { grid-template-columns: 1fr; }
+    .about-sidebar { border-right: none; border-bottom: 1.5px solid var(--ink); }
+    .tools-grid { grid-template-columns: 1fr 1fr; }
+    .viz-section { grid-template-columns: 1fr; }
+    .viz-left { border-right: none; border-bottom: 1.5px solid var(--ink); }
+    .contact-section { grid-template-columns: 1fr; }
+    .contact-right { min-height: 40vh; }
+    .skills-band { padding: 1.5rem; }
+    .tools-section, .projects-section { padding: 3rem 1.5rem; }
+  }
+
+  @media (max-width: 600px) {
+    .tools-grid { grid-template-columns: 1fr; }
+    .project-item { grid-template-columns: 60px 1fr; }
+    .project-meta { display: none; }
+    .expertise-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">GIS // Portfolio</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-eyebrow">// GIS Analyst &amp; Spatial Developer</span>
+    <h1 class="hero-name">Shreya<br>Paturi</h1>
+    <p class="hero-title">QGIS · Python · Urban Mapping</p>
+    <p class="hero-desc">
+      I turn complex spatial data into decisions. Specialising in urban planning analysis and interactive data visualisation — from raw shapefiles to publication-ready maps.
+    </p>
+    <a href="#projects" class="hero-cta">View Projects →</a>
+  </div>
+
+  <div class="hero-right">
+    <div class="map-canvas">
+      <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(245,242,235,0.07)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="800" fill="url(#grid)"/>
+        <g opacity="0.35">
+          <rect x="40" y="60" width="120" height="70" fill="#1a6fff" opacity="0.6"/>
+          <rect x="180" y="60" width="60" height="70" fill="#1a6fff" opacity="0.3"/>
+          <rect x="260" y="60" width="90" height="70" fill="#e63412" opacity="0.5"/>
+          <rect x="370" y="60" width="140" height="70" fill="#1a6fff" opacity="0.4"/>
+          <rect x="530" y="60" width="50" height="70" fill="#00c87a" opacity="0.4"/>
+          <rect x="40" y="150" width="60" height="100" fill="#e63412" opacity="0.4"/>
+          <rect x="120" y="150" width="100" height="100" fill="#1a6fff" opacity="0.5"/>
+          <rect x="240" y="150" width="50" height="100" fill="#00c87a" opacity="0.35"/>
+          <rect x="310" y="150" width="130" height="100" fill="#1a6fff" opacity="0.3"/>
+          <rect x="460" y="150" width="80" height="100" fill="#e63412" opacity="0.5"/>
+          <rect x="560" y="150" width="30" height="100" fill="#1a6fff" opacity="0.3"/>
+          <rect x="40" y="270" width="90" height="80" fill="#00c87a" opacity="0.4"/>
+          <rect x="150" y="270" width="70" height="80" fill="#1a6fff" opacity="0.5"/>
+          <rect x="240" y="270" width="110" height="80" fill="#e63412" opacity="0.35"/>
+          <rect x="370" y="270" width="60" height="80" fill="#1a6fff" opacity="0.4"/>
+          <rect x="450" y="270" width="130" height="80" fill="#00c87a" opacity="0.3"/>
+          <rect x="40" y="370" width="200" height="60" fill="#1a6fff" opacity="0.5"/>
+          <rect x="260" y="370" width="80" height="60" fill="#e63412" opacity="0.45"/>
+          <rect x="360" y="370" width="100" height="60" fill="#1a6fff" opacity="0.3"/>
+          <rect x="480" y="370" width="110" height="60" fill="#00c87a" opacity="0.4"/>
+          <rect x="40" y="450" width="50" height="120" fill="#e63412" opacity="0.45"/>
+          <rect x="110" y="450" width="130" height="120" fill="#1a6fff" opacity="0.35"/>
+          <rect x="260" y="450" width="60" height="120" fill="#00c87a" opacity="0.4"/>
+          <rect x="340" y="450" width="150" height="120" fill="#1a6fff" opacity="0.5"/>
+          <rect x="510" y="450" width="80" height="120" fill="#e63412" opacity="0.3"/>
+          <rect x="40" y="590" width="80" height="90" fill="#1a6fff" opacity="0.4"/>
+          <rect x="140" y="590" width="100" height="90" fill="#e63412" opacity="0.4"/>
+          <rect x="260" y="590" width="120" height="90" fill="#00c87a" opacity="0.5"/>
+          <rect x="400" y="590" width="60" height="90" fill="#1a6fff" opacity="0.3"/>
+          <rect x="480" y="590" width="110" height="90" fill="#e63412" opacity="0.45"/>
+          <rect x="40" y="700" width="160" height="80" fill="#00c87a" opacity="0.35"/>
+          <rect x="220" y="700" width="80" height="80" fill="#1a6fff" opacity="0.5"/>
+          <rect x="320" y="700" width="200" height="80" fill="#e63412" opacity="0.35"/>
+          <rect x="540" y="700" width="50" height="80" fill="#1a6fff" opacity="0.4"/>
+        </g>
+        <g fill="none" stroke="rgba(245,242,235,0.2)" stroke-width="1.5">
+          <line x1="0" y1="140" x2="600" y2="140"/>
+          <line x1="0" y1="260" x2="600" y2="260"/>
+          <line x1="0" y1="360" x2="600" y2="360"/>
+          <line x1="0" y1="440" x2="600" y2="440"/>
+          <line x1="0" y1="580" x2="600" y2="580"/>
+          <line x1="0" y1="690" x2="600" y2="690"/>
+          <line x1="100" y1="0" x2="100" y2="800"/>
+          <line x1="250" y1="0" x2="250" y2="800"/>
+          <line x1="360" y1="0" x2="360" y2="800"/>
+          <line x1="460" y1="0" x2="460" y2="800"/>
+          <line x1="540" y1="0" x2="540" y2="800"/>
+        </g>
+        <circle cx="310" cy="200" r="18" fill="none" stroke="#e63412" stroke-width="1.5" opacity="0.9">
+          <animate attributeName="r" values="14;22;14" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="310" cy="200" r="4" fill="#e63412" opacity="0.9"/>
+        <circle cx="180" cy="520" r="14" fill="none" stroke="#00c87a" stroke-width="1.5" opacity="0.8">
+          <animate attributeName="r" values="10;18;10" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="180" cy="520" r="4" fill="#00c87a" opacity="0.9"/>
+        <circle cx="460" cy="420" r="12" fill="none" stroke="#1a6fff" stroke-width="1.5" opacity="0.8">
+          <animate attributeName="r" values="8;16;8" dur="3.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="460" cy="420" r="4" fill="#1a6fff" opacity="0.9"/>
+        <text x="20" y="55" font-family="monospace" font-size="9" fill="rgba(245,242,235,0.3)">33°52'S</text>
+        <text x="20" y="148" font-family="monospace" font-size="9" fill="rgba(245,242,235,0.3)">33°53'S</text>
+        <text x="20" y="268" font-family="monospace" font-size="9" fill="rgba(245,242,235,0.3)">33°54'S</text>
+        <line x1="40" y1="780" x2="180" y2="780" stroke="rgba(245,242,235,0.5)" stroke-width="1"/>
+        <line x1="40" y1="775" x2="40" y2="785" stroke="rgba(245,242,235,0.5)" stroke-width="1"/>
+        <line x1="180" y1="775" x2="180" y2="785" stroke="rgba(245,242,235,0.5)" stroke-width="1"/>
+        <text x="100" y="795" text-anchor="middle" font-family="monospace" font-size="9" fill="rgba(245,242,235,0.5)">500m</text>
+      </svg>
+    </div>
+    <div class="hero-stat-strip">
+      <div class="hero-stat">
+        <span class="hero-stat-num">24+</span>
+        <span class="hero-stat-label">Projects</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">8TB</span>
+        <span class="hero-stat-label">Data processed</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">5yr</span>
+        <span class="hero-stat-label">Experience</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS BAND -->
+<div class="skills-band">
+  <span class="skills-band-label">Stack //</span>
+  <span class="skill-tag"><span class="dot dot-red"></span>QGIS 3.x</span>
+  <span class="skill-tag"><span class="dot dot-blue"></span>Python</span>
+  <span class="skill-tag"><span class="dot dot-blue"></span>GeoPandas</span>
+  <span class="skill-tag"><span class="dot dot-blue"></span>Shapely</span>
+  <span class="skill-tag"><span class="dot dot-green"></span>PostGIS</span>
+  <span class="skill-tag"><span class="dot dot-orange"></span>Folium</span>
+  <span class="skill-tag"><span class="dot dot-ink"></span>Kepler.gl</span>
+  <span class="skill-tag"><span class="dot dot-green"></span>OpenStreetMap</span>
+  <span class="skill-tag"><span class="dot dot-blue"></span>Matplotlib / Seaborn</span>
+  <span class="skill-tag"><span class="dot dot-ink"></span>GDAL / OGR</span>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-sidebar">
+    <span class="section-number">01</span>
+    <h2 class="section-heading">Who<br>I am</h2>
+  </div>
+  <div class="about-body">
+    <p>
+      I'm a GIS analyst with five years of experience working at the intersection of spatial data and urban decision-making. My work spans government planning departments, urban research labs, and independent consultancy — always with the same focus: turning geographic complexity into clarity.
+    </p>
+    <p>
+      My toolkit is open-source by default. I live in QGIS for spatial editing and analysis, and Python (GeoPandas, Shapely, Folium) for the heavy lifting — automating workflows, building custom tools, and creating interactive web maps that communicate beyond the screen.
+    </p>
+
+    <div class="expertise-grid">
+      <div class="expertise-item">
+        <span class="expertise-icon">▦</span>
+        <div class="expertise-title">Urban Spatial Analysis</div>
+        <div class="expertise-desc">Land use, zoning overlays, network accessibility, density analysis for planning decisions.</div>
+      </div>
+      <div class="expertise-item">
+        <span class="expertise-icon">◈</span>
+        <div class="expertise-title">Data Visualisation</div>
+        <div class="expertise-desc">Interactive web maps, choropleth dashboards, publication-ready cartography.</div>
+      </div>
+      <div class="expertise-item">
+        <span class="expertise-icon">⌘</span>
+        <div class="expertise-title">Python Scripting</div>
+        <div class="expertise-desc">Automation pipelines, custom QGIS plugins, spatial ETL, batch geoprocessing.</div>
+      </div>
+      <div class="expertise-item">
+        <span class="expertise-icon">◉</span>
+        <div class="expertise-title">Spatial Databases</div>
+        <div class="expertise-desc">PostGIS queries, spatial indexing, integrating OSM and government open data sources.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="tools-header">
+    <div>
+      <span class="section-number">02</span>
+      <h2 class="section-heading" style="display:inline; margin-left: 0.5rem;">Tools &amp; Technologies</h2>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">QGIS</div>
+        <span class="tool-level">Expert</span>
+      </div>
+      <p class="tool-desc">Primary desktop GIS. Spatial editing, raster/vector analysis, print composer layouts, custom model builder workflows.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">Vector Analysis</span>
+        <span class="tool-skill-tag">Raster Processing</span>
+        <span class="tool-skill-tag">Model Builder</span>
+        <span class="tool-skill-tag">Print Layout</span>
+        <span class="tool-skill-tag">Plugins</span>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">Python</div>
+        <span class="tool-level">Expert</span>
+      </div>
+      <p class="tool-desc">End-to-end spatial scripting — from raw data ingestion to interactive visualisation. Core spatial stack plus automation.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">GeoPandas</span>
+        <span class="tool-skill-tag">Shapely</span>
+        <span class="tool-skill-tag">Fiona</span>
+        <span class="tool-skill-tag">GDAL/OGR</span>
+        <span class="tool-skill-tag">Folium</span>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">PostGIS</div>
+        <span class="tool-level">Proficient</span>
+      </div>
+      <p class="tool-desc">Spatial database queries for large datasets. Topology analysis, complex joins, and geospatial indexing at scale.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">Spatial SQL</span>
+        <span class="tool-skill-tag">Topology</span>
+        <span class="tool-skill-tag">ST_ Functions</span>
+        <span class="tool-skill-tag">PostgreSQL</span>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">Folium / Kepler.gl</div>
+        <span class="tool-level">Expert</span>
+      </div>
+      <p class="tool-desc">Interactive web maps from Python outputs. Leaflet-backed choropleth maps, heatmaps, and trip animation layers.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">Choropleth</span>
+        <span class="tool-skill-tag">Heatmaps</span>
+        <span class="tool-skill-tag">Hex Bins</span>
+        <span class="tool-skill-tag">Animation</span>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">OpenStreetMap</div>
+        <span class="tool-level">Proficient</span>
+      </div>
+      <p class="tool-desc">OSMnx for street network analysis. Overpass API for feature extraction. osm2pgsql for local database imports.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">OSMnx</span>
+        <span class="tool-skill-tag">Network Analysis</span>
+        <span class="tool-skill-tag">Overpass API</span>
+        <span class="tool-skill-tag">Routing</span>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header-row">
+        <div class="tool-name">Data Visualisation</div>
+        <span class="tool-level">Expert</span>
+      </div>
+      <p class="tool-desc">Publication-ready cartography and analytical charts. Matplotlib for static, Plotly for interactive dashboards.</p>
+      <div class="tool-skills">
+        <span class="tool-skill-tag">Matplotlib</span>
+        <span class="tool-skill-tag">Seaborn</span>
+        <span class="tool-skill-tag">Plotly</span>
+        <span class="tool-skill-tag">Cartopy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projects">
+  <div class="projects-header">
+    <div>
+      <span class="section-number">03</span>
+      <h2 class="section-heading" style="display:inline; margin-left:0.5rem;">Selected Projects</h2>
+    </div>
+  </div>
+  <div class="project-list">
+
+    <div class="project-item">
+      <span class="project-num">P-01</span>
+      <div class="project-body">
+        <div class="project-type">Urban Planning · Visualisation</div>
+        <div class="project-title">Sydney LGA Zoning Transition Atlas</div>
+        <p class="project-desc">
+          Automated comparison of pre- and post-2023 zoning amendments across 33 Sydney LGAs. Python pipeline ingested planning gazette PDFs, extracted spatial polygons, and generated an interactive Folium dashboard for planners and community groups.
+        </p>
+        <div class="project-tags">
+          <span class="tag">QGIS</span>
+          <span class="tag">GeoPandas</span>
+          <span class="tag">Folium</span>
+          <span class="tag">PDF Parsing</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        2024<br>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="project-item">
+      <span class="project-num">P-02</span>
+      <div class="project-body">
+        <div class="project-type">Urban Planning · Network Analysis</div>
+        <div class="project-title">15-Minute City Walkability Scorer</div>
+        <p class="project-desc">
+          OSMnx-based tool that calculates pedestrian accessibility to key amenity categories from any point in a city. Outputs isochrone maps and a composite walkability score. Used by a Melbourne council to evaluate infill development sites.
+        </p>
+        <div class="project-tags">
+          <span class="tag">OSMnx</span>
+          <span class="tag">Shapely</span>
+          <span class="tag">PostGIS</span>
+          <span class="tag">Isochrones</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        2023<br>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="project-item">
+      <span class="project-num">P-03</span>
+      <div class="project-body">
+        <div class="project-type">Data Visualisation · Urban Research</div>
+        <div class="project-title">Urban Heat Island Mapping — Greater Sydney</div>
+        <p class="project-desc">
+          Combined Landsat 8 thermal band data with QGIS zonal statistics and tree canopy coverage from LIDAR to produce heat risk maps. Identified 14 high-priority suburbs for green infrastructure investment. Published in planning department annual report.
+        </p>
+        <div class="project-tags">
+          <span class="tag">QGIS</span>
+          <span class="tag">Landsat 8</span>
+          <span class="tag">LIDAR</span>
+          <span class="tag">Raster Analysis</span>
+          <span class="tag">Cartopy</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        2023<br>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="project-item">
+      <span class="project-num">P-04</span>
+      <div class="project-body">
+        <div class="project-type">Data Visualisation · Transport</div>
+        <div class="project-title">Transit Equity Dashboard</div>
+        <p class="project-desc">
+          Interactive Kepler.gl dashboard overlaying public transit frequency, SEIFA disadvantage indices, and population density. Identified transport service deserts across three metropolitan areas. Built for a social policy research institute.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Kepler.gl</span>
+          <span class="tag">GTFS</span>
+          <span class="tag">GeoPandas</span>
+          <span class="tag">ABS Data</span>
+          <span class="tag">Hex Bins</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        2022<br>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="project-item">
+      <span class="project-num">P-05</span>
+      <div class="project-body">
+        <div class="project-type">Urban Planning · Automation</div>
+        <div class="project-title">QGIS Subdivision Compliance Checker</div>
+        <p class="project-desc">
+          Custom QGIS plugin (PyQGIS) automating lot size, setback, and road frontage compliance checks against planning controls. Reduced manual review time by ~70% for a private urban planning consultancy.
+        </p>
+        <div class="project-tags">
+          <span class="tag">PyQGIS</span>
+          <span class="tag">Plugin Dev</span>
+          <span class="tag">QGIS</span>
+          <span class="tag">Automation</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        2022<br>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VIZ / SKILLS -->
+<section class="viz-section" id="skills">
+  <div class="viz-left">
+    <span class="section-number">04</span>
+    <h2 class="section-heading">Skill<br>Depth</h2>
+
+    <div class="skill-bars" id="skill-bars">
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">QGIS</span>
+          <span class="skill-bar-pct">95%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="95%"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">Python / GeoPandas</span>
+          <span class="skill-bar-pct">90%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="90%"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">PostGIS / SQL</span>
+          <span class="skill-bar-pct">78%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="78%"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">Folium / Kepler.gl</span>
+          <span class="skill-bar-pct">88%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="88%"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">Remote Sensing / Raster</span>
+          <span class="skill-bar-pct">72%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="72%"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">Cartographic Design</span>
+          <span class="skill-bar-pct">85%</span>
+        </div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-w="85%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-right">
+    <span class="section-number" style="color:rgba(245,242,235,0.4)">// Workflow</span>
+    <h2 class="section-heading" style="color:var(--paper)">How I<br>work</h2>
+
+    <div class="workflow-list">
+      <div class="workflow-item">
+        <span class="workflow-num">01</span>
+        <span class="workflow-text"><strong>Data audit &amp; sourcing.</strong> Identify the right datasets — government open data, OSM, satellite — and assess quality, projection, and coverage gaps.</span>
+      </div>
+      <div class="workflow-item">
+        <span class="workflow-num">02</span>
+        <span class="workflow-text"><strong>Python pipeline.</strong> GeoPandas for cleaning, reprojection, spatial joins and aggregation. GDAL for format conversion. All reproducible in a notebook.</span>
+      </div>
+      <div class="workflow-item">
+        <span class="workflow-num">03</span>
+        <span class="workflow-text"><strong>QGIS analysis.</strong> Deep spatial analysis, topology validation, and iterative visual QA. Model Builder for repeatable workflows on large datasets.</span>
+      </div>
+      <div class="workflow-item">
+        <span class="workflow-num">04</span>
+        <span class="workflow-text"><strong>Visualisation &amp; output.</strong> Print-ready maps in QGIS, interactive Folium/Kepler dashboards for stakeholders, and charts via Matplotlib or Plotly.</span>
+      </div>
+      <div class="workflow-item">
+        <span class="workflow-num">05</span>
+        <span class="workflow-text"><strong>Documentation.</strong> Every project ships with methodology notes, projection metadata, and data lineage — maps that can be peer-reviewed and reproduced.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-left">
+    <span class="section-number">05</span>
+    <h2 class="contact-big">Let's map<br><span>something</span><br>together.</h2>
+
+    <div class="contact-links">
+      <a href="/cdn-cgi/l/email-protection#61000d0419210419000c110d044f020e0c" class="contact-link">
+        <span><span class="__cf_email__" data-cfemail="a3c2cfc6dbe3c6dbc2ced3cfc68dc0ccce">[email&#160;protected]</span></span>
+        <span>↗</span>
+      </a>
+      <a href="https://linkedin.com" target="_blank" class="contact-link">
+        <span>LinkedIn</span>
+        <span>↗</span>
+      </a>
+      <a href="https://github.com" target="_blank" class="contact-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+      <a href="#" class="contact-link">
+        <span>Download CV</span>
+        <span>↓</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="contact-right">
+    <div class="grid-overlay"></div>
+    <div class="contact-availability">
+      <div class="avail-badge">Available for work</div>
+      <p class="avail-text">
+        Open to <strong>freelance projects</strong> in urban spatial analysis, interactive mapping, and Python GIS automation. Based in <strong>Sydney, AU</strong> — available remotely worldwide.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Shreya Paturi · GIS Portfolio · 2025</p>
+  <p>Built with spatial love // <a href="#">QGIS</a> + <a href="#">Python</a></p>
+</footer>
+
+<script>
+  // Animate skill bars on scroll
+  const bars = document.querySelectorAll('.skill-bar-fill');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        bars.forEach(bar => { bar.style.width = bar.getAttribute('data-w'); });
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  const skillSection = document.getElementById('skill-bars');
+  if (skillSection) observer.observe(skillSection);
+</script>
+
+</body>
+</html>
